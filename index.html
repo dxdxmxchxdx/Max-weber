@@ -314,6 +314,80 @@ valores;
 formas de relacionamento;
 conhecimentos necessários para determinadas profissões.</p></div>
   </div>
+  <style>
+#quiz-teaser{min-height:auto;padding:90px 8% 40px;align-items:flex-start}
+#quiz{min-height:100vh;padding-top:110px}
+#quiz[hidden]{display:none}
+.qz-box{max-width:760px;margin-top:30px;background:var(--panel);border:1px solid var(--line);border-radius:24px;padding:30px}
+.qz-top{display:flex;justify-content:space-between;color:var(--muted);font-size:13px;font-weight:800;letter-spacing:2px;margin-bottom:12px}
+.qz-bar{height:6px;background:var(--line);border-radius:9px;overflow:hidden;margin-bottom:26px}
+.qz-bar i{display:block;height:100%;width:0;background:var(--accent);transition:.4s}
+.qz-q{font-size:clamp(22px,3.4vw,30px);line-height:1.25;margin-bottom:22px}
+.qz-opt{display:block;width:100%;text-align:left;font:inherit;color:var(--text);background:transparent;border:1px solid var(--line);border-radius:14px;padding:15px 18px;margin-bottom:10px;cursor:pointer;transition:.2s}
+.qz-opt:hover:not(:disabled){border-color:var(--accent);transform:translateX(4px)}
+.qz-opt:disabled{cursor:default}
+.qz-opt.ok{border-color:#3ddc97;background:rgba(61,220,151,.12)}
+.qz-opt.no{border-color:#ff6b6b;background:rgba(255,107,107,.12)}
+.qz-fb{display:none;margin:16px 0 4px;padding:14px 16px;border-left:3px solid var(--accent);background:rgba(0,200,232,.08);border-radius:0 12px 12px 0;color:var(--muted)}
+.qz-fb b{color:var(--text)}
+.qz-score{font-size:72px;font-weight:900;color:var(--accent);line-height:1;margin:6px 0 12px}
+</style>
+
+<section id="quiz-teaser">
+  <div class="eyebrow">04 — Hora de testar</div>
+  <h2 class="section-title">Será que você<br>entendeu Weber?</h2>
+  <p class="intro">Um quiz rápido com 8 perguntas sobre as teorias de Weber e sua presença na escola.</p>
+  <button class="cta" onclick="qzStart()">FAZER O QUIZ →</button>
+</section>
+
+<section id="quiz" hidden>
+  <div class="eyebrow">Quiz — Weber na escola</div>
+  <div class="qz-box" id="qzBox"></div>
+</section>
+
+<script>
+const QZ=[
+{q:"Para Weber, o que transforma uma conduta em “ação social”?",o:["Ser realizada sempre em grupo","Ter sentido atribuído pelo indivíduo e se orientar pela conduta de outros","Ser imposta por uma lei","Ser repetida por hábito, sem reflexão"],a:1,e:"Ação social é a conduta dotada de sentido que leva em conta o comportamento de outras pessoas."},
+{q:"Qual destes é um exemplo de ação social na escola?",o:["A chuva molhar os alunos no pátio","Um aluno espirrar durante a aula","A professora mudar a explicação ao perceber que a turma não entendeu","O sino tocar no horário"],a:2,e:"A professora atribui sentido à sua ação e a orienta pela reação dos alunos."},
+{q:"O que é uma “relação social” para Weber?",o:["Qualquer encontro casual entre pessoas","Ações orientadas reciprocamente por um sentido compartilhado","Uma amizade íntima","Uma regra escrita pela direção"],a:1,e:"Na relação social, cada pessoa considera a conduta da outra, como na relação professor–aluno."},
+{q:"O que é um “tipo ideal”?",o:["Um modelo de escola perfeita","Uma pessoa exemplar a ser imitada","Uma construção analítica abstrata usada para comparar a realidade","Uma meta moral da sociedade"],a:2,e:"O tipo ideal não é perfeito nem desejável: é uma ferramenta de análise para comparar fenômenos reais."},
+{q:"Qual característica descreve a burocracia, segundo Weber?",o:["Decisões baseadas em laços pessoais","Hierarquia, regras escritas e cargos bem definidos","Autoridade fundada apenas no carisma","Ausência de procedimentos"],a:1,e:"Na escola isso aparece em cargos (diretor, coordenador), regimentos, atas e protocolos."},
+{q:"Como a racionalização aparece na escola?",o:["Aulas totalmente improvisadas","Decisões tomadas só por tradição","Avaliações, currículos, horários e documentos organizando a rotina","Eliminação de todas as regras"],a:2,e:"Racionalizar é organizar a vida social por meio de cálculo, planejamento e procedimentos."},
+{q:"O que caracteriza o método compreensivo?",o:["Medir fenômenos apenas com números","Buscar compreender o sentido que orienta as ações","Aplicar leis naturais universais à sociedade","Julgar moralmente as condutas"],a:1,e:"A pergunta vai além de “o que aconteceu?”: busca “qual sentido orientou essa ação?”."},
+{q:"Como a escola atua como espaço de socialização?",o:["Apenas transmitindo conteúdos de provas","Preparando o indivíduo para participar da sociedade, ao aprender regras, papéis e convivência","Isolando o aluno das relações com os colegas","Eliminando qualquer diferença entre os alunos"],a:1,e:"Na escola o aluno aprende a conviver, seguir regras e assumir papéis, preparando-se para participar da vida em sociedade."}
+];
+let qzI=0,qzS=0,qzDone=false;
+function qzStart(){
+  const s=document.getElementById('quiz');s.hidden=false;
+  qzI=0;qzS=0;qzRender();
+  s.scrollIntoView({behavior:'smooth'});
+}
+function qzRender(){
+  const b=document.getElementById('qzBox'),d=QZ[qzI];qzDone=false;
+  b.innerHTML='<div class="qz-top"><span>PERGUNTA '+(qzI+1)+' / '+QZ.length+'</span><span>ACERTOS: '+qzS+'</span></div>'
+   +'<div class="qz-bar"><i style="width:'+(qzI/QZ.length*100)+'%"></i></div>'
+   +'<h3 class="qz-q">'+d.q+'</h3>'
+   +d.o.map((t,i)=>'<button class="qz-opt" onclick="qzPick('+i+')">'+t+'</button>').join('')
+   +'<div class="qz-fb" id="qzFb"></div>'
+   +'<button class="cta" id="qzNext" style="display:none" onclick="qzNext()">'+(qzI===QZ.length-1?'VER RESULTADO →':'PRÓXIMA →')+'</button>';
+}
+function qzPick(i){
+  if(qzDone)return;qzDone=true;
+  const d=QZ[qzI],bs=document.querySelectorAll('.qz-opt');
+  bs.forEach((x,k)=>{x.disabled=true;if(k===d.a)x.classList.add('ok');});
+  if(i===d.a)qzS++;else bs[i].classList.add('no');
+  const f=document.getElementById('qzFb');
+  f.innerHTML='<b>'+(i===d.a?'Correto! ':'Não foi dessa vez. ')+'</b>'+d.e;f.style.display='block';
+  document.getElementById('qzNext').style.display='inline-block';
+}
+function qzNext(){
+  qzI++;
+  if(qzI<QZ.length){qzRender();return;}
+  const m=qzS>=7?'Excelente! Você domina Weber.':qzS>=5?'Muito bem! Falta pouco para dominar.':'Vale revisar os cartões de conceitos e tentar de novo.';
+  document.getElementById('qzBox').innerHTML='<div class="qz-top"><span>RESULTADO</span></div><div class="qz-score">'+qzS+'/'+QZ.length+'</div><p class="intro">'+m+'</p>'
+   +'<button class="cta" onclick="qzStart()">REFAZER O QUIZ</button> <a class="cta" style="background:transparent;color:var(--text);border:1px solid var(--line)" href="#conceitos">REVER CONCEITOS</a>';
+}
+                                                 </script>
 <a class="cta" href="#fontes">IR PARA AS FONTES →</a>
 </section>
 
@@ -331,7 +405,7 @@ conhecimentos necessários para determinadas profissões.</p></div>
 </section>
 
 <footer>
-  MAX WEBER · SEMINÁRIO DE SOCIOLOGIA
+  MAX WEBER · SEMINÁRIO DE SOCIOLOGIA. MARIA EDUARDA MACHADO, NICOLY LOPES, RENATO DO NASCIMENTO 
 </footer>
 
 <script>
