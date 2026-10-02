@@ -54,3 +54,26 @@ radial-gradient(circle at 18% 80%,rgba(0,200,232,.08),transparent 30%)}
 .card .num{color:var(--accent);font-weight:900;font-size:12px}
 .family{display:grid;grid-template-columns:repeat(2,1fr);gap:18px;margin-top:40px}
 .family .card{min-height:210px}
+</style>
+</head>
+<body>
+    <nav>
+        <div class="logo">MAX WEBER</div>
+        <div>
+            <a href="#biografia">Biografia</a>
+            <a href="#teoria">Teoria</a>
+            <a href="#legado">Legado</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <p class="eyebrow">Sociologia compreensiva</p>
+        <h1>Max Weber</h1>
+        <p class="subtitle">Uma experiência interativa sobre a vida e a obra de um dos pais da sociologia moderna.</p>
+        <a href="#biografia" class="cta">Explorar obra</a>
+    </section>
+
+    <!-- Adicione as demais seções conforme as classes do seu CSS -->
+</body>
+</html>
+
